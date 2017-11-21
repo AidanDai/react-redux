@@ -1,5 +1,5 @@
 import verifySubselectors from './verifySubselectors'
-  
+
 export function impureFinalPropsSelectorFactory(
   mapStateToProps,
   mapDispatchToProps,
@@ -64,7 +64,7 @@ export function pureFinalPropsSelectorFactory(
     const nextStateProps = mapStateToProps(state, ownProps)
     const statePropsChanged = !areStatePropsEqual(nextStateProps, stateProps)
     stateProps = nextStateProps
-    
+
     if (statePropsChanged)
       mergedProps = mergeProps(stateProps, dispatchProps, ownProps)
 
@@ -96,6 +96,10 @@ export function pureFinalPropsSelectorFactory(
 // allowing connectAdvanced's shouldComponentUpdate to return false if final
 // props have not changed. If false, the selector will always return a new
 // object and shouldComponentUpdate will always return true.
+// 如果 pure 为 true，则 selectorFactory 返回的选择器会记录其结果
+// 如果最终 props 没有改变，则允许 connectAdvanced 的 shouldComponentUpdate 返回 false
+// 如果 pure 为 false，那么 selector 将一直返回一个新的 object，
+// 并且 shouldComponentUpdate 将一直返回 true
 
 export default function finalPropsSelectorFactory(dispatch, {
   initMapStateToProps,
@@ -107,6 +111,7 @@ export default function finalPropsSelectorFactory(dispatch, {
   const mapDispatchToProps = initMapDispatchToProps(dispatch, options)
   const mergeProps = initMergeProps(dispatch, options)
 
+  // 生产环境下校验 connect() 的参数
   if (process.env.NODE_ENV !== 'production') {
     verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps, options.displayName)
   }
@@ -115,6 +120,8 @@ export default function finalPropsSelectorFactory(dispatch, {
     ? pureFinalPropsSelectorFactory
     : impureFinalPropsSelectorFactory
 
+  // 组合 mapStateToProps, mapDispatchToProps, mergeProps 这些 selector，
+  // 形成高阶的 selector
   return selectorFactory(
     mapStateToProps,
     mapDispatchToProps,

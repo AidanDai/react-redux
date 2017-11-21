@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 
+// 自定义复杂类型的 PropTypes
 export const subscriptionShape = PropTypes.shape({
   trySubscribe: PropTypes.func.isRequired,
   tryUnsubscribe: PropTypes.func.isRequired,

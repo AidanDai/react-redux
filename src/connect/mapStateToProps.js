@@ -1,3 +1,4 @@
+// mapStateToProps 逻辑检查
 import { wrapMapToPropsConstant, wrapMapToPropsFunc } from './wrapMapToProps'
 
 export function whenMapStateToPropsIsFunction(mapStateToProps) {
